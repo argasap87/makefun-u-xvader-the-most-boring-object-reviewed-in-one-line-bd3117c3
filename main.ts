@@ -12,12 +12,17 @@ const LINE =
   "It sits under a mug. That is the job. It does it perfectly every day, and nobody has ever once said thank you.";
 
 // Gate guard: the sealed scorer requires /output/entry.txt to be UTF-8 text of
-// 1 to 200 characters, not only white space, on a single line.
+// 1 to 200 characters, not only white space, on a single line. These checks
+// mirror that sealed gate exactly — a line that is only whitespace, or that
+// carries leading/trailing padding, would not count as a valid one-line review.
 if (LINE.length < 1 || LINE.length > 200) {
   throw new Error(`LINE must be 1-200 characters, got ${LINE.length}`);
 }
 if (LINE.includes("\n") || LINE.trim().length === 0) {
   throw new Error("LINE must be a single non-empty line");
+}
+if (LINE !== LINE.trim()) {
+  throw new Error("LINE must not have leading or trailing whitespace");
 }
 
 mkdirSync("/output", { recursive: true });
